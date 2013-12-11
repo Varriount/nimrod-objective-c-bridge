@@ -3,7 +3,11 @@ Nimrod Objective-C bridge
 =========================
 
 This is a module for the `Nimrod programming language
-<http://http://nimrod-lang.org>`_.  Its purpose is to provide macros and some prewrapped Objective-C classes to interact with iOS or MacOSX code. The module is only tested against Apple's environment, but nothing depends on it. You should be able to interact with GNUStep equally without problems.
+<http://nimrod-lang.org>`_.  Its purpose is to provide macros and some pre
+wrapped Objective-C classes to interact with iOS or MacOSX code. The module is
+only tested against Apple's environment, but nothing depends on it. You should
+be able to interact with `GNUStep <https://en.wikipedia.org/wiki/GNUstep>`_
+equally without problems.
 
 
 License
