@@ -1,0 +1,56 @@
+=========================
+Nimrod Objective-C bridge
+=========================
+
+This is a module for the `Nimrod programming language
+<http://http://nimrod-lang.org>`_.  Its purpose is to provide macros and some prewrapped Objective-C classes to interact with iOS or MacOSX code. The module is only tested against Apple's environment, but nothing depends on it. You should be able to interact with GNUStep equally without problems.
+
+
+License
+=======
+
+`MIT license <LICENSE.rst>`_.
+
+
+Installation
+============
+
+TODO.
+
+Usage
+=====
+
+TODO.
+
+
+Documentation
+=============
+
+TODO.
+
+
+Changes
+=======
+
+This is version 0.0.0. For a list of changes see the `docs/CHANGES.rst file
+<docs/CHANGES.rst>`_.
+
+
+Git branches
+============
+
+This project uses the `git-flow branching model
+<https://github.com/nvie/gitflow>`_. Which means the ``master`` default branch
+doesn't *see* much movement, development happens in another branch like
+``develop``. Most people will be fine using the ``master`` branch, but if you
+want to contribute something please check out first the ``develop`` branch and
+do pull requests against that.
+
+
+Feedback
+========
+
+You can send me feedback through `github's issue tracker
+<https://github.com/gradha/nimrod-objective-c-bridge/issues>`_. I also take a
+look from time to time to `Nimrod's forums <http://forum.nimrod-lang.org>`_
+where you can talk to other nimrod programmers.
