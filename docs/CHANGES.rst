@@ -2,7 +2,7 @@
 Nimrod Objective-C bridge changes log
 =====================================
 
-v0.2.0, ????-??-??
+v0.1.1, ????-??-??
 ------------------
 
 * `Added macro to support both instance and class methods
