@@ -2,11 +2,12 @@
 *.exe
 *.swp
 .DS_Store
+README.html
 nimcache/
 
 # Full paths.
 /LICENSE.html
-/README.html
 /docindex.html
 /docs/CHANGES.html
+/docs/release_steps.html
 /nakefile

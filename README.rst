@@ -19,24 +19,53 @@ License
 Installation
 ============
 
-TODO.
+Stable version
+--------------
+
+Not yet.
+
+Development version
+-------------------
+
+Use `Nimrod's babel package manager <https://github.com/nimrod-code/babel>`_ to
+install locally the github checkout::
+
+    $ git clone https://github.com/gradha/nimrod-objective-c-bridge.git
+    $ cd nimrod-objective-c-bridge
+    $ git checkout develop
+    $ babel install
+
 
 Usage
 =====
 
-TODO.
+Use ``import objcbridge/core`` in your source code to have access to the core
+macros allowing interaction between Objective-C and Nimrod code. For an example
+showing how to call both static and instance methods, see
+`examples/greeter/README.rst <examples/greeter/README.rst>`_ and the
+implementation files in that directory.
 
 
 Documentation
 =============
 
-TODO.
+Documentation is still parse. You can run the ``doc`` `nakefile task
+<https://github.com/fowlmouth/nake>`_ to generate first an HTML version of all
+available docs. Unix example::
+
+    $ cd `babel path objcbridge`
+    $ nake doc
+    $ open docindex.html
+
+Once you have done that, browsing `docindex file <docindex.rst>`_ will allow
+you to see all the included documentation. However, for the moment looking at
+the provided `examples directory <examples>`_. is your best bet.
 
 
 Changes
 =======
 
-This is version 0.0.0. For a list of changes see the `docs/CHANGES.rst file
+This is version 0.1.1. For a list of changes see the `docs/CHANGES.rst file
 <docs/CHANGES.rst>`_.
 
 
