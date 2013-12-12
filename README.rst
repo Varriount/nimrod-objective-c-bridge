@@ -42,8 +42,8 @@ Usage
 Use ``import objcbridge/core`` in your source code to have access to the core
 macros allowing interaction between Objective-C and Nimrod code. For an example
 showing how to call both static and instance methods, see
-`examples/greeter/greeter.nim <examples/greeter/greeter.nim>`_ and the `related
-Objective-C NSGreeter class <examples/greeter/NSGreeter.m>`_.
+`examples/greeter/README.rst <examples/greeter/README.rst>`_ and the
+implementation files in that directory.
 
 
 Documentation

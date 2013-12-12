@@ -2,7 +2,8 @@ import nake, os, times, osproc, htmlparser, xmltree, strtabs, strutils
 
 let
   rst_files = @["docs"/"release_steps",
-    "docs"/"CHANGES", "LICENSE", "README", "docindex"]
+    "docs"/"CHANGES", "LICENSE", "README", "docindex",
+    "examples"/"greeter"/"README"]
 
 task "babel", "Uses babel to install the Objective-c bridge locally":
   if shell("babel install"):
