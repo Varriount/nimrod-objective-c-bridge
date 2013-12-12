@@ -29,4 +29,4 @@ What to do for a new public release?
   branch. Refs #release issue*.
 * Close the dummy release issue.
 * Announce at
-  `http://forum.nimrod-code.org/ <http://forum.nimrod-code.org/>`_.
+  `http://forum.nimrod-lang.org/t/315 <http://forum.nimrod-lang.org/t/315>`_.
