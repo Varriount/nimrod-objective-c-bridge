@@ -65,7 +65,7 @@ the provided `examples directory <examples>`_. is your best bet.
 Changes
 =======
 
-This is version 0.1.1. For a list of changes see the `docs/CHANGES.rst file
+This is version 0.2.0. For a list of changes see the `docs/CHANGES.rst file
 <docs/CHANGES.rst>`_.
 
 

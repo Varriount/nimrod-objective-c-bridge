@@ -1,21 +1,24 @@
 [Package]
 name          = "objcbridge"
-version       = "0.1.1"
+version       = "0.2.0"
 author        = "Grzegorz Adam Hankiewicz"
 description   = """Macros to interface with Objective-C."""
 license       = "MIT"
 
 InstallFiles = """
+
+LICENSE.rst
+README.rst
 docindex.rst
 docs/CHANGES.rst
-examples/greeter/greeter.nim
-examples/greeter/greeter.nimrod.cfg
 examples/greeter/NSGreeter.h
 examples/greeter/NSGreeter.m
-LICENSE.rst
+examples/greeter/README.rst
+examples/greeter/greeter.nim
+examples/greeter/greeter.nimrod.cfg
 nakefile.nim
 objcbridge/core.nim
-README.rst
+
 """
 
 [Deps]
