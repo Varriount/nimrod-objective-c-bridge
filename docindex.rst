@@ -12,3 +12,4 @@ files you need to run ``nake doc`` at the root of the project:
   * `README.rst <README.rst>`_.
   * `docs/CHANGES.rst <docs/CHANGES.rst>`_.
   * `docs/release_steps.rst <docs/release_steps.rst>`_ (only git version).
+  * `examples/greeter/README.rst <examples/greeter/README.rst>`_.

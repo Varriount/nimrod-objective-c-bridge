@@ -2,7 +2,8 @@ import nake, os, times, osproc, htmlparser, xmltree, strtabs, strutils
 
 let
   rst_files = @["docs"/"release_steps",
-    "docs"/"CHANGES", "LICENSE", "README", "docindex"]
+    "docs"/"CHANGES", "LICENSE", "README", "docindex",
+    "examples"/"greeter"/"README"]
 
 task "babel", "Uses babel to install the Objective-c bridge locally":
   if shell("babel install"):
@@ -67,3 +68,7 @@ task "check_doc", "Validates rst format for a subset of documentation":
     if output.len > 0 or exit != 0:
       echo "Failed python processing of " & rst_file
       echo output
+
+task "babel", "Installs locally through babel, overwrites previous version":
+  if shell("babel install -y"):
+    echo "Done."
