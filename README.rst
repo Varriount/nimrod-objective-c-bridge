@@ -22,7 +22,11 @@ Installation
 Stable version
 --------------
 
-Not yet.
+Use `Nimrod's babel package manager <https://github.com/nimrod-code/babel>`_ to
+install the package::
+
+    $ babel update
+    $ babel install objcbridge
 
 Development version
 -------------------

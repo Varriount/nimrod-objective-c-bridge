@@ -5,7 +5,8 @@ Nimrod Objective-C bridge changes log
 v0.3.1, ????-??-??
 ------------------
 
-* Nothing yet.
+* `Documented stable version installation through babel
+  <https://github.com/gradha/nimrod-objective-c-bridge/issues/7>`_.
 
 v0.2.0, 2013-12-12
 ------------------
