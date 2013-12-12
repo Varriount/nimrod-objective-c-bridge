@@ -44,7 +44,7 @@ iterator unroll_parameters(node: PNimrodNode, startPos = 0):
       pos += 1
 
 
-macro import_objc_class*(class_name: string, body: stmt): stmt {.immediate.} =
+macro import_objc_class*(class_name, header: string, body: stmt): stmt {.immediate.} =
   ## Modifies procdefs to use emit.
   result = newNimNode(nnkStmtList)
   for inode in body.children:
