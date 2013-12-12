@@ -1,0 +1,22 @@
+[Package]
+name          = "objcbridge"
+version       = "0.1.1"
+author        = "Grzegorz Adam Hankiewicz"
+description   = """Macros to interface with Objective-C."""
+license       = "MIT"
+
+InstallFiles = """
+docindex.rst
+docs/CHANGES.rst
+examples/greeter/greeter.nim
+examples/greeter/greeter.nimrod.cfg
+examples/greeter/NSGreeter.h
+examples/greeter/NSGreeter.m
+LICENSE.rst
+nakefile.nim
+objcbridge/core.nim
+README.rst
+"""
+
+[Deps]
+Requires: "nake >= 1.0"

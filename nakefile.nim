@@ -67,3 +67,7 @@ task "check_doc", "Validates rst format for a subset of documentation":
     if output.len > 0 or exit != 0:
       echo "Failed python processing of " & rst_file
       echo output
+
+task "babel", "Installs locally through babel, overwrites previous version":
+  if shell("babel install -y"):
+    echo "Done."
