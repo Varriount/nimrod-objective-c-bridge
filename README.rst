@@ -53,7 +53,7 @@ implementation files in that directory.
 Documentation
 =============
 
-Documentation is still parse. You can run the ``doc`` `nakefile task
+Documentation is still sparse. You can run the ``doc`` `nakefile task
 <https://github.com/fowlmouth/nake>`_ to generate first an HTML version of all
 available docs. Unix example::
 
@@ -63,7 +63,7 @@ available docs. Unix example::
 
 Once you have done that, browsing `docindex file <docindex.rst>`_ will allow
 you to see all the included documentation. However, for the moment looking at
-the provided `examples directory <examples>`_. is your best bet.
+the provided `examples directory <examples>`_ is your best bet.
 
 
 Changes
