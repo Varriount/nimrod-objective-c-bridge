@@ -1,4 +1,4 @@
-import objcbridge/core, strutils
+import objcbridge/core, strutils, macros
 
 {.passC: "-I.".}
 {.passL: "-lobjc".}
@@ -6,7 +6,8 @@ import objcbridge/core, strutils
 {.compile: "NSGreeter.m".}
 
 type
-  NSGreeter {.importc: "NSGreeter*", final, header: """"NSGreeter.h"""".} = object
+  TNSGreeter {.importc: "NSGreeter", final, header: """"NSGreeter.h"""".} = object
+  NSGreeter = ref TNSGreeter
 
 
 import_objc_class(NSGreeter, ""):
