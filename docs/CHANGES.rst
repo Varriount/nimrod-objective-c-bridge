@@ -7,6 +7,8 @@ v0.3.1, ????-??-??
 
 * `Documented stable version installation through babel
   <https://github.com/gradha/nimrod-objective-c-bridge/issues/7>`_.
+* `Made import macro generate the necessary type
+  <https://github.com/gradha/nimrod-objective-c-bridge/issues/3>`_.
 
 v0.2.0, 2013-12-12
 ------------------

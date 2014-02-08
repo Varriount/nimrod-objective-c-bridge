@@ -29,6 +29,11 @@ const
 
 iterator unroll_parameters(node: PNimrodNode, startPos = 0):
     tuple[name, ptype, default: PNimrodNode] =
+  ## Unrolls the parameter list.
+  ##
+  ## Code definitions for parameters can be in the form "a, b, c = type". The
+  ## iterator will return tuples with the name, nimrod type, and if any, the
+  ## default parameter.
   node.expect_kind(nnkFormalParams)
   var pos = 0
   for ident_node_index in 1..len(node)-1:
@@ -44,9 +49,66 @@ iterator unroll_parameters(node: PNimrodNode, startPos = 0):
       pos += 1
 
 
-macro import_objc_class*(class_name, header: string, body: stmt): stmt {.immediate.} =
-  ## Modifies procdefs to use emit.
+proc new_type_block(class_name, header: PNimrodNode):
+    PNimrodNode {.compileTime.} =
+  ## Returns a nnkTypeSection subtree to generate the types for the class.
+  ##
+  ## Pass the user name node, which will be prefixed with a T for the non ref
+  ## objec type. The header should be a string like "foo.h" or <foo/bar.h>, as
+  ## it will be passed directly to the header pragma.
+
+  result = newNimNode(nnkTypeSection)
+  # First create the base T prefixed type, equivalent to:
+  # Txxx {.importc: "xxx", final, header: """yyy""".} = object
+  result.add(newNimNode(nnkTypeDef).add(
+    newNimNode(nnkPragmaExpr).add(
+      newIdentNode("T" & $class_name),
+      newNimNode(nnkPragma).add(
+        newNimNode(nnkExprColonExpr).add(
+          newIdentNode("importc"), newStrLitNode($class_name)),
+        newIdentNode("final"),
+        newNimNode(nnkExprColonExpr).add(
+          newIdentNode("header"), header)
+        )),
+    newEmptyNode(),
+    newNimNode(nnkObjectTy).add(
+      newEmptyNode(), newEmptyNode(), newEmptyNode())))
+  # Now append the `normal` type referencing the Txxx version. Equivalent to:
+  # xxx = ref Txxx
+  result.add(newNimNode(nnkTypeDef).add(
+    newIdentNode($class_name),
+    newEmptyNode(),
+    newNimNode(nnkRefTy).add(newIdentNode("T" & $class_name))))
+
+
+macro import_objc_class*(class_name, header: string, body: stmt):
+    stmt {.immediate.} =
+  ## Macro which generates a binding for an existing Objective-C class.
+  ##
+  ## Use this for existing classes which you want to call from Nimrod. Specify
+  ## as `class_name` the name of the class (same as the objc version). The
+  ## `header` parameter should specify the path to the header declaring the
+  ## class, so it can be imported in the generated code.
+  ##
+  ## In the body of the macro you have to specify the procs that mimic the objc
+  ## version. If you are interfacing against an instance method, you need to
+  ## define the proc with a first parameter named ``self``. If you don't do
+  ## this, the generated code will call a class method instead.
+  ##
+  ## All the objc classes interfaced like this will create a Nimrod type of the
+  ## same name, but this type will automatically include the pointer ``*``,
+  ## since Nimrod doesn't use asterisks. To access the real non pointer type
+  ## you have to prefix the type with a ``T``.
+  ##
+  ## Usually the procs you define in the block of this macro end up with the
+  ## same name. An exception is the typical `new` class method, which gets
+  ## renamed in Nimrod to `new & class_name`. This allows having different
+  ## Nimrod `new` procs for different types without collisions.
+  header.expectKind({nnkStrLit, nnkTripleStrLit})
   result = newNimNode(nnkStmtList)
+  result.add(new_type_block(class_name, header))
+
+  # Iterate the body looking for proc definitions.
   for inode in body.children:
     case inode.kind:
     of nnkProcDef:

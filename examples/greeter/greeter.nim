@@ -1,15 +1,19 @@
-import objcbridge/core, strutils
+import objcbridge/core, strutils, macros
 
-{.passC: "-I.".}
-{.passL: "-lobjc".}
-{.passL: "-framework AppKit".}
-{.compile: "NSGreeter.m".}
+# The following compiler pragmas are only required to embed the NSGreeter.m
+# code, usually you won't be doing any of this in your program.
+block:
+  {.passC: "-I.".}
+  {.passL: "-lobjc".}
+  {.passL: "-framework AppKit".}
+  {.compile: "NSGreeter.m".}
 
-type
-  NSGreeter {.importc: "NSGreeter*", final, header: """"NSGreeter.h"""".} = object
+import_objc_class(NSObject, """<objc/objc.h>"""):
+  proc new(): NSObject
+  proc release(self: NSObject)
 
-
-import_objc_class(NSGreeter, ""):
+# Import the NSGreeter type, along with some procs.
+import_objc_class(NSGreeter, """"NSGreeter.h""""):
   proc genericGreeter(hello: cstring = "pepe")
   proc greet(self: NSGreeter, x, y: int)
   proc new(): NSGreeter
@@ -17,6 +21,9 @@ import_objc_class(NSGreeter, ""):
   proc setName(self: NSGreeter, name: cstring)
 
 proc tester() =
+  let o = newNSObject()
+  o.release()
+
   genericGreeter("blah" & " and " & "foo")
   genericGreeter()
   let g = newNSGreeter()
