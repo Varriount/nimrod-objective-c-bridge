@@ -8,6 +8,9 @@ block:
   {.passL: "-framework AppKit".}
   {.compile: "NSGreeter.m".}
 
+import_objc_class(NSObject, """<objc/objc.h>"""):
+  proc new(): NSObject
+  proc release(self: NSObject)
 
 # Import the NSGreeter type, along with some procs.
 import_objc_class(NSGreeter, """"NSGreeter.h""""):
@@ -18,6 +21,9 @@ import_objc_class(NSGreeter, """"NSGreeter.h""""):
   proc setName(self: NSGreeter, name: cstring)
 
 proc tester() =
+  let o = newNSObject()
+  o.release()
+
   genericGreeter("blah" & " and " & "foo")
   genericGreeter()
   let g = newNSGreeter()
