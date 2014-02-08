@@ -49,7 +49,40 @@ iterator unroll_parameters(node: PNimrodNode, startPos = 0):
       pos += 1
 
 
-macro import_objc_class*(class_name, header: string, body: stmt): stmt {.immediate.} =
+proc new_type_block(class_name, header: PNimrodNode):
+    PNimrodNode {.compileTime.} =
+  ## Returns a nnkTypeSection subtree to generate the types for the class.
+  ##
+  ## Pass the user name node, which will be prefixed with a T for the non ref
+  ## objec type. The header should be a string like "foo.h" or <foo/bar.h>, as
+  ## it will be passed directly to the header pragma.
+
+  result = newNimNode(nnkTypeSection)
+  # First create the base T prefixed type, equivalent to:
+  # Txxx {.importc: "xxx", final, header: """yyy""".} = object
+  result.add(newNimNode(nnkTypeDef).add(
+    newNimNode(nnkPragmaExpr).add(
+      newIdentNode("T" & $class_name),
+      newNimNode(nnkPragma).add(
+        newNimNode(nnkExprColonExpr).add(
+          newIdentNode("importc"), newStrLitNode($class_name)),
+        newIdentNode("final"),
+        newNimNode(nnkExprColonExpr).add(
+          newIdentNode("header"), header)
+        )),
+    newEmptyNode(),
+    newNimNode(nnkObjectTy).add(
+      newEmptyNode(), newEmptyNode(), newEmptyNode())))
+  # Now append the `normal` type referencing the Txxx version. Equivalent to:
+  # xxx = ref Txxx
+  result.add(newNimNode(nnkTypeDef).add(
+    newIdentNode($class_name),
+    newEmptyNode(),
+    newNimNode(nnkRefTy).add(newIdentNode("T" & $class_name))))
+
+
+macro import_objc_class*(class_name, header: string, body: stmt):
+    stmt {.immediate.} =
   ## Macro which generates a binding for an existing Objective-C class.
   ##
   ## Use this for existing classes which you want to call from Nimrod. Specify
@@ -73,32 +106,7 @@ macro import_objc_class*(class_name, header: string, body: stmt): stmt {.immedia
   ## Nimrod `new` procs for different types without collisions.
   header.expectKind({nnkStrLit, nnkTripleStrLit})
   result = newNimNode(nnkStmtList)
-
-  echo($class_name)
-  # Generate the type for the class.
-  var typedef = newNimNode(nnkTypeSection)
-  # First create the base T prefixed type, equivalent to:
-  # Txxx {.importc: "xxx", final, header: """yyy""".} = object
-  typedef.add(newNimNode(nnkTypeDef).add(
-    newNimNode(nnkPragmaExpr).add(
-      newIdentNode("T" & $class_name),
-      newNimNode(nnkPragma).add(
-        newNimNode(nnkExprColonExpr).add(
-          newIdentNode("importc"), newStrLitNode($class_name)),
-        newIdentNode("final"),
-        newNimNode(nnkExprColonExpr).add(
-          newIdentNode("header"), header)
-        )),
-    newEmptyNode(),
-    newNimNode(nnkObjectTy).add(
-      newEmptyNode(), newEmptyNode(), newEmptyNode())))
-  # Now append the `normal` type referencing the Txxx version. Equivalent to:
-  # xxx = ref Txxx
-  typedef.add(newNimNode(nnkTypeDef).add(
-    newIdentNode($class_name),
-    newEmptyNode(),
-    newNimNode(nnkRefTy).add(newIdentNode("T" & $class_name))))
-  result.add(typedef)
+  result.add(new_type_block(class_name, header))
 
   # Iterate the body looking for proc definitions.
   for inode in body.children:
