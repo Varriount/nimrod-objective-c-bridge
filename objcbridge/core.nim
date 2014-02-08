@@ -29,6 +29,11 @@ const
 
 iterator unroll_parameters(node: PNimrodNode, startPos = 0):
     tuple[name, ptype, default: PNimrodNode] =
+  ## Unrolls the parameter list.
+  ##
+  ## Code definitions for parameters can be in the form "a, b, c = type". The
+  ## iterator will return tuples with the name, nimrod type, and if any, the
+  ## default parameter.
   node.expect_kind(nnkFormalParams)
   var pos = 0
   for ident_node_index in 1..len(node)-1:
@@ -61,7 +66,36 @@ macro import_objc_class*(class_name, header: string, body: stmt): stmt {.immedia
   ## same name, but this type will automatically include the pointer ``*``,
   ## since Nimrod doesn't use asterisks. To access the real non pointer type
   ## you have to prefix the type with a ``T``.
+  header.expectKind({nnkStrLit, nnkTripleStrLit})
   result = newNimNode(nnkStmtList)
+
+  echo($class_name)
+  # Generate the type for the class.
+  var typedef = newNimNode(nnkTypeSection)
+  # First create the base T prefixed type, equivalent to:
+  # Txxx {.importc: "xxx", final, header: """yyy""".} = object
+  typedef.add(newNimNode(nnkTypeDef).add(
+    newNimNode(nnkPragmaExpr).add(
+      newIdentNode("T" & $class_name),
+      newNimNode(nnkPragma).add(
+        newNimNode(nnkExprColonExpr).add(
+          newIdentNode("importc"), newStrLitNode($class_name)),
+        newIdentNode("final"),
+        newNimNode(nnkExprColonExpr).add(
+          newIdentNode("header"), header)
+        )),
+    newEmptyNode(),
+    newNimNode(nnkObjectTy).add(
+      newEmptyNode(), newEmptyNode(), newEmptyNode())))
+  # Now append the `normal` type referencing the Txxx version. Equivalent to:
+  # xxx = ref Txxx
+  typedef.add(newNimNode(nnkTypeDef).add(
+    newIdentNode($class_name),
+    newEmptyNode(),
+    newNimNode(nnkRefTy).add(newIdentNode("T" & $class_name))))
+  result.add(typedef)
+
+  # Iterate the body looking for proc definitions.
   for inode in body.children:
     case inode.kind:
     of nnkProcDef:
