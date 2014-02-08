@@ -59,24 +59,29 @@ proc new_type_block(class_name, header: PNimrodNode):
 
   result = newNimNode(nnkTypeSection)
   # First create the base T prefixed type, equivalent to:
-  # Txxx {.importc: "xxx", final, header: """yyy""".} = object
-  result.add(newNimNode(nnkTypeDef).add(
-    newNimNode(nnkPragmaExpr).add(
-      newIdentNode("T" & $class_name),
-      newNimNode(nnkPragma).add(
+  # Txxx* {.importc: "xxx", final, header: """yyy""".} = object
+
+  # The pragma node is created depending on if header has to be added or not.
+  var pragma_node = newNimNode(nnkPragma).add(
         newNimNode(nnkExprColonExpr).add(
           newIdentNode("importc"), newStrLitNode($class_name)),
-        newIdentNode("final"),
-        newNimNode(nnkExprColonExpr).add(
-          newIdentNode("header"), header)
-        )),
+        newIdentNode("final"))
+
+  if len(header.strVal) > 0:
+    pragma_node.add(newNimNode(nnkExprColonExpr).add(
+      newIdentNode("header"), header))
+
+  result.add(newNimNode(nnkTypeDef).add(
+    newNimNode(nnkPragmaExpr).add(
+      postfix(newIdentNode("T" & $class_name), "*"),
+      pragma_node),
     newEmptyNode(),
     newNimNode(nnkObjectTy).add(
       newEmptyNode(), newEmptyNode(), newEmptyNode())))
   # Now append the `normal` type referencing the Txxx version. Equivalent to:
-  # xxx = ref Txxx
+  # xxx* = ref Txxx
   result.add(newNimNode(nnkTypeDef).add(
-    newIdentNode($class_name),
+    postfix(newIdentNode($class_name), "*"),
     newEmptyNode(),
     newNimNode(nnkRefTy).add(newIdentNode("T" & $class_name))))
 
