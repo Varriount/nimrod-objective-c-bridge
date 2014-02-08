@@ -66,6 +66,11 @@ macro import_objc_class*(class_name, header: string, body: stmt): stmt {.immedia
   ## same name, but this type will automatically include the pointer ``*``,
   ## since Nimrod doesn't use asterisks. To access the real non pointer type
   ## you have to prefix the type with a ``T``.
+  ##
+  ## Usually the procs you define in the block of this macro end up with the
+  ## same name. An exception is the typical `new` class method, which gets
+  ## renamed in Nimrod to `new & class_name`. This allows having different
+  ## Nimrod `new` procs for different types without collisions.
   header.expectKind({nnkStrLit, nnkTripleStrLit})
   result = newNimNode(nnkStmtList)
 
