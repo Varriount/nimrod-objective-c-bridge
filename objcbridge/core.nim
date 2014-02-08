@@ -45,7 +45,22 @@ iterator unroll_parameters(node: PNimrodNode, startPos = 0):
 
 
 macro import_objc_class*(class_name, header: string, body: stmt): stmt {.immediate.} =
-  ## Modifies procdefs to use emit.
+  ## Macro which generates a binding for an existing Objective-C class.
+  ##
+  ## Use this for existing classes which you want to call from Nimrod. Specify
+  ## as `class_name` the name of the class (same as the objc version). The
+  ## `header` parameter should specify the path to the header declaring the
+  ## class, so it can be imported in the generated code.
+  ##
+  ## In the body of the macro you have to specify the procs that mimic the objc
+  ## version. If you are interfacing against an instance method, you need to
+  ## define the proc with a first parameter named ``self``. If you don't do
+  ## this, the generated code will call a class method instead.
+  ##
+  ## All the objc classes interfaced like this will create a Nimrod type of the
+  ## same name, but this type will automatically include the pointer ``*``,
+  ## since Nimrod doesn't use asterisks. To access the real non pointer type
+  ## you have to prefix the type with a ``T``.
   result = newNimNode(nnkStmtList)
   for inode in body.children:
     case inode.kind:
