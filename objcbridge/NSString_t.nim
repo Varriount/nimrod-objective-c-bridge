@@ -1,4 +1,4 @@
-import objcbridge/core, unicode
+import objcbridge/core, objcbridge/NSObject_t, unicode
 
 type
   NSStringEncoding* = enum
@@ -35,4 +35,4 @@ const
     NSUTF16StringEncoding* = NSUnicodeStringEncoding
 
 import_objc_class(NSString, """<Foundation/Foundation.h>"""):
-  declare_type
+  subclass_from NSObject

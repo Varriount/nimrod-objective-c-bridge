@@ -10,7 +10,10 @@ proc tester() =
   var a: NSArray
   a = NSArray_p.array()
   echo "Empty array has ", a.len
-  #var b = arrayWithObject(@"Hey")
+  var
+    s: NSString
+  #  t: NSObject = NSObject(s)
+  #var b = arrayWithObject(s)
 
 when isMainModule:
   tester()

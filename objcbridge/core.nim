@@ -49,8 +49,8 @@ iterator unroll_parameters(node: PNimrodNode, startPos = 0):
       pos += 1
 
 
-proc new_type_block(class_name, header: PNimrodNode):
-    PNimrodNode {.compileTime.} =
+proc new_type_block(class_name, header: PNimrodNode,
+    super_class_name: PNimrodNode = nil): PNimrodNode {.compileTime.} =
   ## Returns a nnkTypeSection subtree to generate the types for the class.
   ##
   ## Pass the user name node, which will be prefixed with a T for the non ref
@@ -59,17 +59,23 @@ proc new_type_block(class_name, header: PNimrodNode):
 
   result = newNimNode(nnkTypeSection)
   # First create the base T prefixed type, equivalent to:
-  # Txxx* {.importc: "xxx", final, header: """yyy""".} = object
+  # Txxx* {.importc: "xxx", inheritable, header: """yyy""".} = object (of zzzz)
 
   # The pragma node is created depending on if header has to be added or not.
   var pragma_node = newNimNode(nnkPragma).add(
         newNimNode(nnkExprColonExpr).add(
           newIdentNode("importc"), newStrLitNode($class_name)),
-        newIdentNode("final"))
+        newIdentNode("inheritable"))
 
   if len(header.strVal) > 0:
     pragma_node.add(newNimNode(nnkExprColonExpr).add(
       newIdentNode("header"), header))
+
+  # Store in this var a subtree generated from the `super_class_name` parameter.
+  var super_class_node = newEmptyNode()
+  if not super_class_name.isNil:
+    super_class_node = newNimNode(nnkOfInherit).add(
+      newIdentNode("T" & $super_class_name))
 
   result.add(newNimNode(nnkTypeDef).add(
     newNimNode(nnkPragmaExpr).add(
@@ -77,7 +83,7 @@ proc new_type_block(class_name, header: PNimrodNode):
       pragma_node),
     newEmptyNode(),
     newNimNode(nnkObjectTy).add(
-      newEmptyNode(), newEmptyNode(), newEmptyNode())))
+      newEmptyNode(), super_class_node, newEmptyNode())))
   # Now append the `normal` type referencing the Txxx version. Equivalent to:
   # xxx* = ref Txxx
   result.add(newNimNode(nnkTypeDef).add(
@@ -123,6 +129,18 @@ macro import_objc_class*(class_name, header: string, body: stmt):
       #else:
       #  echo "-> ", treeRepr(inode)
       #  echo "Found nnkIdent '" & key & "', don't know what to do with it!"
+    of nnkCommand:
+      # We expect at most two commands, first the command, then the keyword.
+      inode.expect_len(2)
+      inode[0].expect_kind(nnkIdent)
+      inode[1].expect_kind(nnkIdent)
+      let key = $inode[0]
+      if cmpIgnoreStyle(key, "subclass_from") == 0:
+        result.add(new_type_block(class_name, header, inode[1]))
+        #result.add(new_type_block(class_name, header, inode[1]))
+      #else:
+      #  echo "-> ", treeRepr(inode)
+      #  echo "Found nnkCommand '" & key & "', don't know what to do with it!"
     of nnkProcDef:
       # A proc definition should have 7 nodes, the last being empty of body
       inode.expect_min_len(7)
