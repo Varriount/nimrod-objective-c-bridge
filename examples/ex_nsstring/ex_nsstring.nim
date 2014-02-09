@@ -7,13 +7,13 @@ block:
   {.passL: "-framework AppKit".}
 
 const
-  normal_string = "Nimrod string"
+  normal_string = "hello '$1' literal string"
 
 proc tester() =
-  var a: NSString = @"brakalar literal string"
+  var a: NSString = @normal_string
   echo a
-  #a = stringWithFormat(@"Hello %s", normal_string)
-  #echo a
+  a = @@(normal_string % "Yaya!")
+  echo a
 
 when isMainModule:
   tester()
