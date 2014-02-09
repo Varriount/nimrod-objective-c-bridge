@@ -1,4 +1,4 @@
-import objcbridge/core, objcbridge/NSObject, strutils, macros, unsigned
+import objcbridge/core, objcbridge/NSObject, strutils, macros, unsigned, unicode
 
 type
   NSStringEncoding* = enum
@@ -26,6 +26,11 @@ type
     NSUTF32BigEndianStringEncoding = 0x98000100,
     NSUTF32LittleEndianStringEncoding = 0x9c000100
 
+  unichar* = TRune16 ## Alias to unicode module. \
+    ##
+    ## Maybe not so good, since the default TRune16 is signed, but the objc
+    ## version is unsigned.
+
 const
     NSUTF16StringEncoding* = NSUnicodeStringEncoding
 
@@ -37,13 +42,18 @@ import_objc_class(NSString, """<Foundation/Foundation.h>"""):
 
   # Getting a String’s Length
   proc length*(self: NSString): uint
-    ## Returns the number of Unicode characters in the receiver
-
   proc lengthOfBytesUsingEncoding*(self: NSString, enc: NSStringEncoding): uint
-  proc UTF8String*(self: NSString): cstring
 
+  proc maximumLengthOfBytesUsingEncoding*(self:
+    NSString, enc: NSStringEncoding): uint
+
+  # Getting Characters and Bytes
+  proc characterAtIndex*(self: NSString, index: uint): unichar
+
+  # Getting C Strings
   proc getCString*(self: NSString, buffer: ptr char, maxLength: uint,
     encoding:NSStringEncoding): bool
+  proc UTF8String*(self: NSString): cstring
 
 
 # Helper procs to ease conversion to Nimrod.
