@@ -127,7 +127,6 @@ macro import_objc_class*(class_name, header: string, body: stmt):
         params = c[3]
         pragmas = c[4]
       params.expect_kind(nnkFormalParams)
-      pragmas.expect_kind(nnkEmpty)
 
       # Convenience mangling for unique methods like alloc or new.
       case toLower(proc_name)

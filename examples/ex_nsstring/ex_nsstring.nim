@@ -6,9 +6,14 @@ block:
   {.passL: "-lobjc".}
   {.passL: "-framework AppKit".}
 
+const
+  normal_string = "Nimrod string"
+
 proc tester() =
-  var a: NSString = @"brakalar"
-  echo "a"
+  var a: NSString = @"brakalar literal string"
+  echo a
+  #a = stringWithFormat(@"Hello %s", normal_string)
+  #echo a
 
 when isMainModule:
   tester()

@@ -30,6 +30,8 @@ const
     NSUTF16StringEncoding* = NSUnicodeStringEncoding
 
 import_objc_class(NSString, """<Foundation/Foundation.h>"""):
+  # Creating and initializing strings
+  #proc stringWithFormat*(format: NSString): NSString {.varargs.}
   proc length*(self: NSString): uint
   proc lengthOfBytesUsingEncoding*(self: NSString, enc: NSStringEncoding): uint
   proc UTF8String*(self: NSString): cstring
