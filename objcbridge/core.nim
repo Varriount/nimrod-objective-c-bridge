@@ -121,9 +121,9 @@ macro import_objc_class*(class_name, header: string, body: stmt):
       inode.expect_min_len(7)
       inode[6].expect_kind(nnkEmpty)
       var c = inode.copyNimTree
-      c[0].expect_kind(nnkIdent)
+      c[0].expect_kind({nnkIdent, nnkPostfix})
       let
-        proc_name = $c[0]
+        proc_name = $basename(c[0])
         params = c[3]
         pragmas = c[4]
       params.expect_kind(nnkFormalParams)
@@ -131,8 +131,8 @@ macro import_objc_class*(class_name, header: string, body: stmt):
 
       # Convenience mangling for unique methods like alloc or new.
       case toLower(proc_name)
-      of "new": c[0] = newIdentNode("new" & $class_name)
-      else: nil
+      of "new": c[0].basename = "new" & $class_name
+      else: discard
 
       params.expect_min_len(1)
       let ret_type = params[0]
