@@ -27,6 +27,14 @@
 	return name_;
 }
 
+- (NSString*)nsname
+{
+	if (name_)
+		return [NSString stringWithUTF8String:name_];
+	else
+		return nil;
+}
+
 - (void)setName:(char*)name
 {
 	free(name_);
