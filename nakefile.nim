@@ -1,4 +1,5 @@
-import nake, os, times, osproc, htmlparser, xmltree, strtabs, strutils
+import nake, os, times, osproc, htmlparser, xmltree, strtabs, strutils,
+  sequtils
 
 let
   rst_files = @["docs"/"release_steps",
@@ -72,3 +73,11 @@ task "check_doc", "Validates rst format for a subset of documentation":
 task "babel", "Installs locally through babel, overwrites previous version":
   if shell("babel install -y"):
     echo "Done."
+
+task "test", "Tries to compile and run all examples":
+  echo "nake: Running tests…"
+  for path in to_seq(walk_files("examples"/"ex_nsstring"/"ex_*.nim")):
+    let (dir, filename) = path.split_path
+    withDir dir:
+      direShell "nimrod objc -r", filename
+  echo "nake: Finished successfully."
