@@ -111,11 +111,18 @@ macro import_objc_class*(class_name, header: string, body: stmt):
   ## Nimrod `new` procs for different types without collisions.
   header.expectKind({nnkStrLit, nnkTripleStrLit})
   result = newNimNode(nnkStmtList)
-  result.add(new_type_block(class_name, header))
 
   # Iterate the body looking for proc definitions.
   for inode in body.children:
     case inode.kind:
+    of nnkIdent:
+      # Check for our own pseudo keywords.
+      let key = $inode
+      if cmpIgnoreStyle(key, "declare_type") == 0:
+        result.add(new_type_block(class_name, header))
+      #else:
+      #  echo "-> ", treeRepr(inode)
+      #  echo "Found nnkIdent '" & key & "', don't know what to do with it!"
     of nnkProcDef:
       # A proc definition should have 7 nodes, the last being empty of body
       inode.expect_min_len(7)
@@ -203,3 +210,4 @@ macro import_objc_class*(class_name, header: string, body: stmt):
       discard
     else:
       echo "Ignoring unexpected node ", repr(inode.kind), " ", $inode.kind
+      echo "-> ", treeRepr(inode)

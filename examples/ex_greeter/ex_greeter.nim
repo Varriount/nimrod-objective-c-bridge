@@ -1,4 +1,4 @@
-import objcbridge/core, objcbridge/NSObject, objcbridge/NSString,
+import objcbridge/core, objcbridge/NSObject_p, objcbridge/NSString_p,
   strutils, macros
 
 # The following compiler pragmas are only required to embed the NSGreeter.m
@@ -11,6 +11,7 @@ block:
 
 # Import the NSGreeter type, along with some procs.
 import_objc_class(NSGreeter, """"NSGreeter.h""""):
+  declare_type
   proc genericGreeter(hello: cstring = "pepe")
   proc greet(self: NSGreeter, x, y: int)
   proc new*(): NSGreeter

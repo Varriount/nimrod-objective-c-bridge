@@ -1,4 +1,6 @@
-import objcbridge/core, strutils, macros
+import objcbridge/core, objcbridge/NSObject_t, strutils, macros
+
+export NSObject_t.NSObject
 
 import_objc_class(NSObject, """<Foundation/Foundation.h>"""):
   proc new*(): NSObject
