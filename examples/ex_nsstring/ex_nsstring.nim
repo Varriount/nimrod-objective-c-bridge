@@ -1,4 +1,4 @@
-import objcbridge/core, objcbridge/NSObject, objcbridge/NSString,
+import objcbridge/core, objcbridge/NSObject_p, objcbridge/NSString_p,
   strutils, macros, unicode
 
 # Force this to compile on macosx form the commandline.

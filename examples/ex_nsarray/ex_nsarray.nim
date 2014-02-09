@@ -1,5 +1,5 @@
-import objcbridge/core, objcbridge/NSObject, objcbridge/NSArray,
-  objcbridge/NSString, strutils, macros, unicode
+import objcbridge/core, objcbridge/NSObject_p, objcbridge/NSArray_p,
+  objcbridge/NSString_p, strutils, macros, unicode
 
 # Force this to compile on macosx form the commandline.
 block:
@@ -8,7 +8,7 @@ block:
 
 proc tester() =
   var a: NSArray
-  a = NSArray.array()
+  a = NSArray_p.array()
   echo "Empty array has ", a.len
   #var b = arrayWithObject(@"Hey")
 

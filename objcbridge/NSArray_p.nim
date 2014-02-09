@@ -1,4 +1,7 @@
-import objcbridge/core, objcbridge/NSObject, strutils, macros, unsigned
+import objcbridge/core, objcbridge/NSObject_t, objcbridge/NSArray_t,
+  strutils, macros, unsigned
+
+export NSArray_t.NSArray
 
 import_objc_class(NSArray, """<Foundation/Foundation.h>"""):
   # Creating an array
