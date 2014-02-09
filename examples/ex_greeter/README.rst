@@ -16,5 +16,5 @@ well with Nimrod's object oriented nature where the first parameter is used for
 the dot syntax notation.
 
 The file `NSGreeter.m <NSGreeter.m>`_ and its related header file contain the
-implementation of a normal Objective-C class.  The file `greeter.nim
-<greeter.nim>`_ contains the Nimrod code calling this class.
+implementation of a normal Objective-C class.  The file `ex_greeter.nim
+<ex_greeter.nim>`_ contains the Nimrod code calling this class.
