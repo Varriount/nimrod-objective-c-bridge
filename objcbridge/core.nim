@@ -192,5 +192,7 @@ macro import_objc_class*(class_name, header: string, body: stmt):
 
       result.add(c)
       #echo treeRepr(c)
+    of nnkCommentStmt:
+      discard
     else:
       echo "Ignoring unexpected node ", repr(inode.kind), " ", $inode.kind

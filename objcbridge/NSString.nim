@@ -34,6 +34,8 @@ import_objc_class(NSString, """<Foundation/Foundation.h>"""):
   #varargs won't work, needs to change proc to a macro.
   #proc stringWithFormat*(format: NSString): NSString {.varargs.}
   proc stringWithUTF8String*(bytes: cstring): NSString
+
+  # Getting a String’s Length
   proc length*(self: NSString): uint
   proc lengthOfBytesUsingEncoding*(self: NSString, enc: NSStringEncoding): uint
   proc UTF8String*(self: NSString): cstring
