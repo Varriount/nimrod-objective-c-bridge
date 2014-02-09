@@ -76,8 +76,10 @@ task "babel", "Installs locally through babel, overwrites previous version":
 
 task "test", "Tries to compile and run all examples":
   echo "nake: Running tests…"
-  for path in to_seq(walk_files("examples"/"ex_nsstring"/"ex_*.nim")):
+  var count = 0
+  for path in to_seq(walk_files("examples"/"*"/"ex_*.nim")):
     let (dir, filename) = path.split_path
     withDir dir:
       direShell "nimrod objc -r", filename
-  echo "nake: Finished successfully."
+      count += 1
+  echo "nake: Finished successfully ", count, " examples."
