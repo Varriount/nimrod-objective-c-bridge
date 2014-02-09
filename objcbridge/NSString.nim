@@ -37,6 +37,8 @@ import_objc_class(NSString, """<Foundation/Foundation.h>"""):
 
   # Getting a String’s Length
   proc length*(self: NSString): uint
+    ## Returns the number of Unicode characters in the receiver
+
   proc lengthOfBytesUsingEncoding*(self: NSString, enc: NSStringEncoding): uint
   proc UTF8String*(self: NSString): cstring
 

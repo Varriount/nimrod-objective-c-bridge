@@ -7,7 +7,7 @@
 ## Source code for this package and related modules may be found at
 ## https://github.com/gradha/nimrod-objective-c-bridge.
 
-when not defined(objc):
+when not (defined(objc) or defined(nimdoc)):
   {.fatal: "Sorry, this module only supports objc compilation!".}
 
 import macros, strutils
@@ -180,7 +180,14 @@ macro import_objc_class*(class_name, header: string, body: stmt):
       let lit = newNimNode(nnkTripleStrLit)
       lit.strVal = code
       e.add(lit)
-      c[6] = emit_body
+
+      # Either replace the empty node, or add it after the docstring.
+      if c[6].kind == nnkEmpty:
+        c[6] = emit_body
+      else:
+        c[6].expect_kind(nnkStmtList)
+        c[6].expect_len(1)
+        c[6].add(emit_body)
 
       # Add some pragmas for values with a return type.
       #if ret_type.kind == nnkEmpty:
