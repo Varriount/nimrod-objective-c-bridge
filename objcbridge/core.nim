@@ -120,9 +120,8 @@ macro import_objc_class*(class_name, header: string, body: stmt):
       let key = $inode
       if cmpIgnoreStyle(key, "declare_type") == 0:
         result.add(new_type_block(class_name, header))
-      #else:
-      #  echo "-> ", treeRepr(inode)
-      #  echo "Found nnkIdent '" & key & "', don't know what to do with it!"
+      else:
+        echo "Hey there!"
     of nnkProcDef:
       # A proc definition should have 7 nodes, the last being empty of body
       inode.expect_min_len(7)
