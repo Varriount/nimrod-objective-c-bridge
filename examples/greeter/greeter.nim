@@ -1,4 +1,5 @@
-import objcbridge/core, objcbridge/NSObject, strutils, macros
+import objcbridge/core, objcbridge/NSObject, objcbridge/NSString,
+  strutils, macros
 
 # The following compiler pragmas are only required to embed the NSGreeter.m
 # code, usually you won't be doing any of this in your program.
@@ -15,6 +16,7 @@ import_objc_class(NSGreeter, """"NSGreeter.h""""):
   proc new*(): NSGreeter
   proc release(self: NSGreeter)
   proc setName(self: NSGreeter, name: cstring)
+  proc nsname(self: NSGreeter): NSString
 
 proc tester() =
   var a: NSObject
@@ -25,6 +27,9 @@ proc tester() =
   genericGreeter()
   let g = newNSGreeter()
   g.setName("foo")
+  let n = g.nsname
+  echo "Nsname length ", n.length
+  echo "NSname value '", n, "'"
   g.greet(1, 3)
   g.release()
 
