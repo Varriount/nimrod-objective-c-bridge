@@ -31,7 +31,9 @@ const
 
 import_objc_class(NSString, """<Foundation/Foundation.h>"""):
   # Creating and initializing strings
+  #varargs won't work, needs to change proc to a macro.
   #proc stringWithFormat*(format: NSString): NSString {.varargs.}
+  proc stringWithUTF8String*(bytes: cstring): NSString
   proc length*(self: NSString): uint
   proc lengthOfBytesUsingEncoding*(self: NSString, enc: NSStringEncoding): uint
   proc UTF8String*(self: NSString): cstring
@@ -65,3 +67,7 @@ proc `$`*(x: NSString, safe = false): string =
 proc `@`*(s: cstring): NSString {.nodecl,NoStackFrame,exportc.} =
   ## Use like in objc code to create a NSString literal from a plain string.
   {.emit: """@`s`""".}
+
+proc `@@`*(s: cstring): NSString {.inline.} =
+  ## Alias for default stringWithUTF8String Nimrod to objc string conversion.
+  result = stringWithUTF8String(s)
