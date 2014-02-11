@@ -65,7 +65,8 @@ proc new_type_block(class_name, header: PNimrodNode,
   var pragma_node = newNimNode(nnkPragma).add(
         newNimNode(nnkExprColonExpr).add(
           newIdentNode("importc"), newStrLitNode($class_name)),
-        newIdentNode("inheritable"))
+        newIdentNode("inheritable"),
+        newIdentNode("pure"))
 
   if len(header.strVal) > 0:
     pragma_node.add(newNimNode(nnkExprColonExpr).add(
