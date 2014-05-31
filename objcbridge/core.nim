@@ -10,7 +10,10 @@
 when not (defined(objc) or defined(nimdoc)):
   {.fatal: "Sorry, this module only supports objc compilation!".}
 
-import macros, strutils
+import macros, strutils, strtabs
+
+var hierarchies {.compileTime.}: PStringTable
+  ## Keeps track of declared class hierarchies.
 
 const
   versionStr* = "0.3.1" ## Module version as a string.
@@ -59,13 +62,13 @@ proc new_type_block(class_name, header: PNimrodNode,
 
   result = newNimNode(nnkTypeSection)
   # First create the base T prefixed type, equivalent to:
-  # Txxx* {.importc: "xxx", inheritable, header: """yyy""".} = object (of zzzz)
+  # Txxx* {.importc: "xxx", final, header: """yyy""".} = object (of zzzz)
 
   # The pragma node is created depending on if header has to be added or not.
   var pragma_node = newNimNode(nnkPragma).add(
         newNimNode(nnkExprColonExpr).add(
           newIdentNode("importc"), newStrLitNode($class_name)),
-        newIdentNode("inheritable"),
+        newIdentNode("final"),
         newIdentNode("pure"))
 
   if len(header.strVal) > 0:
@@ -74,9 +77,9 @@ proc new_type_block(class_name, header: PNimrodNode,
 
   # Store in this var a subtree generated from the `super_class_name` parameter.
   var super_class_node = newEmptyNode()
-  if not super_class_name.isNil:
-    super_class_node = newNimNode(nnkOfInherit).add(
-      newIdentNode("T" & $super_class_name))
+  #if not super_class_name.isNil:
+  #  super_class_node = newNimNode(nnkOfInherit).add(
+  #    newIdentNode("T" & $super_class_name))
 
   result.add(newNimNode(nnkTypeDef).add(
     newNimNode(nnkPragmaExpr).add(
@@ -118,6 +121,17 @@ macro import_objc_class*(class_name, header: string, body: stmt):
   ## Nimrod `new` procs for different types without collisions.
   header.expectKind({nnkStrLit, nnkTripleStrLit})
   result = newNimNode(nnkStmtList)
+  let class_name_str = $class_name
+
+  ## By default keep track of all classes, insert them without parent.
+  if hierarchies.isNil:
+    hierarchies = newStringTable(modeStyleInsensitive)
+
+  #if not hierarchies.hasKey(class_name_str):
+  #  echo "Adding ", class_name_str, " to existing hierarchies"
+  #  echo "Currently has ", hierarchies.len
+  #  for c in hierarchies.keys(): echo "\t", c
+  #  hierarchies[class_name_str] = ""
 
   # Iterate the body looking for proc definitions.
   for inode in body.children:
@@ -137,6 +151,7 @@ macro import_objc_class*(class_name, header: string, body: stmt):
       inode[1].expect_kind(nnkIdent)
       let key = $inode[0]
       if cmpIgnoreStyle(key, "subclass_from") == 0:
+        #hierarchies[class_name_str] = $inode[1]
         result.add(new_type_block(class_name, header, inode[1]))
       else:
         echo "-> ", treeRepr(inode)
@@ -155,7 +170,7 @@ macro import_objc_class*(class_name, header: string, body: stmt):
 
       # Convenience mangling for unique methods like alloc or new.
       case toLower(proc_name)
-      of "new": c[0].basename = "new" & $class_name
+      of "new": c[0].basename = "new" & class_name_str
       else: discard
 
       params.expect_min_len(1)
@@ -185,7 +200,7 @@ macro import_objc_class*(class_name, header: string, body: stmt):
 
       # Define how do we start to emit the method.
       if static_method:
-        code.add($class_name & " " & proc_name)
+        code.add(class_name_str & " " & proc_name)
       else:
         code.add("`self` " & proc_name)
         start_param = 1
