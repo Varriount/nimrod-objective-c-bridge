@@ -13,7 +13,7 @@ proc tester() =
   var
     s: NSString
   #  t: NSObject = NSObject(s)
-  var b = arrayWithObject(s)
+  #var b = arrayWithObject(s)
 
 when isMainModule:
   tester()

@@ -50,7 +50,7 @@ proc `$`*(x: NSString, safe = false): string =
     NSUTF8StringEncoding)
   assert ret, "Could not get C string for NSString, unicode problem?"
 
-proc `@`*(s: cstring): NSString {.nodecl,NoStackFrame,exportc.} =
+proc `@`*(s: cstring): NSString {.nodecl,exportc.} =
   ## Use like in objc code to create a NSString literal from a plain string.
   {.emit: """@`s`""".}
 
